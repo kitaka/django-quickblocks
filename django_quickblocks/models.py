@@ -43,7 +43,8 @@ class QuickBlock(SmartModel):
     """
     quickblock_type = models.ForeignKey(QuickBlockType,
                                         verbose_name="Content Type",
-                                        help_text="The category, or type for this content block")
+                                        help_text="The category, or type for this content block",
+                                        on_delete=models.CASCADE)
 
     title = models.CharField(max_length=255, blank=True, null=True,
                              help_text="The title for this block of content, optional")
@@ -53,7 +54,7 @@ class QuickBlock(SmartModel):
                                help_text="The body of text for this content block, optional")
     image = models.ImageField(blank=True, null=True, upload_to='quickblocks',
                               help_text="Any image that should be displayed with this content block, optional")
-    color = models.CharField(blank=True, null=True, max_length=16, 
+    color = models.CharField(blank=True, null=True, max_length=16,
                             help_text="A background color to use for the image, in the format: #rrggbb")
     link = models.CharField(blank=True, null=True, max_length=255,
                             help_text="Any link that should be associated with this content block, optional")
@@ -73,13 +74,13 @@ class QuickBlock(SmartModel):
             self.tags = " " + self.tags.strip().lower() + " "
 
     def sorted_images(self):
-        return self.images.filter(is_active=True).order_by('-priority')        
+        return self.images.filter(is_active=True).order_by('-priority')
 
     def __unicode__(self):
         return self.title
 
 class QuickBlockImage(SmartModel):
-    quickblock = models.ForeignKey(QuickBlock, related_name='images')
+    quickblock = models.ForeignKey(QuickBlock, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='quickblock_images/', width_field="width", height_field="height")
     caption = models.CharField(max_length=64)
     priority = models.IntegerField(default=0, blank=True, null=True)

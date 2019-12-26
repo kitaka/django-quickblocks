@@ -2,13 +2,15 @@ from .models import *
 from smartmin.views import *
 from django import forms
 
+
 class QuickBlockCRUDL(SmartCRUDL):
     model = QuickBlock
     permissions = True
     actions = ('create', 'update', 'list')
 
     class Update(SmartUpdateView):
-        fields = ('title', 'summary', 'content', 'image', 'color', 'link', 'video_id', 'quickblock_type', 'priority', 'is_active')
+        fields = (
+        'title', 'summary', 'content', 'image', 'color', 'link', 'video_id', 'quickblock_type', 'priority', 'is_active')
 
         def pre_save(self, obj):
             obj = super(QuickBlockCRUDL.Update, self).pre_save(obj)
@@ -93,7 +95,8 @@ class QuickBlockCRUDL(SmartCRUDL):
         def derive_initial(self, *args, **kwargs):
             initial = super(QuickBlockCRUDL.Create, self).derive_initial(*args, **kwargs)
             quickblock_type = self.get_type()
-            other_blocks = QuickBlock.objects.filter(is_active=True, quickblock_type=quickblock_type).order_by('-priority')
+            other_blocks = QuickBlock.objects.filter(is_active=True, quickblock_type=quickblock_type).order_by(
+                '-priority')
             if not other_blocks:
                 initial['priority'] = 0
             else:
@@ -124,10 +127,10 @@ class QuickBlockCRUDL(SmartCRUDL):
             block_type = self.get_type()
             if block_type:
                 obj.quickblock_type = block_type
-            
+
             obj.space_tags()
             return obj
-            
+
     class List(SmartListView):
         fields = ('title', 'priority', 'quickblock_type', 'tags')
         link_fields = ('title',)
@@ -150,7 +153,7 @@ class QuickBlockCRUDL(SmartCRUDL):
                 queryset = queryset.filter(quickblock_type=quickblock_type)
 
             queryset = queryset.filter(quickblock_type__is_active=True)
-                
+
             return queryset
 
         def get_context_data(self, *args, **kwargs):
@@ -158,6 +161,7 @@ class QuickBlockCRUDL(SmartCRUDL):
             context['types'] = QuickBlockType.objects.filter(is_active=True)
             context['filtered_type'] = self.get_type()
             return context
+
 
 class QuickBlockTypeCRUDL(SmartCRUDL):
     model = QuickBlockType
@@ -168,6 +172,7 @@ class QuickBlockTypeCRUDL(SmartCRUDL):
         fields = ('name', 'slug', 'description')
         link_fields = ('name',)
 
+
 class QuickBlockImageCRUDL(SmartCRUDL):
     model = QuickBlockImage
     actions = ('create', 'update', 'list')
@@ -175,13 +180,14 @@ class QuickBlockImageCRUDL(SmartCRUDL):
     class Update(SmartUpdateView):
         exclude = ('quickblock', 'modified_by', 'modified_on', 'created_on', 'created_by', 'width', 'height')
         title = "Edit Image"
-        success_message = "Image edited successfully."        
+        success_message = "Image edited successfully."
 
         def get_success_url(self):
             return reverse('django_quickblocks.quickblock_update', args=[self.object.quickblock.id])
 
     class Create(SmartCreateView):
-        exclude = ('quickblock', 'is_active', 'modified_by', 'modified_on', 'created_on', 'created_by', 'width', 'height')
+        exclude = (
+        'quickblock', 'is_active', 'modified_by', 'modified_on', 'created_on', 'created_by', 'width', 'height')
         title = "Add Image"
         success_message = "Image added successfully."
 
@@ -203,5 +209,5 @@ class QuickBlockImageCRUDL(SmartCRUDL):
             obj.quickblock = QuickBlock.objects.get(pk=self.request.REQUEST.get('quickblock'))
             return obj
 
-        
+
 
