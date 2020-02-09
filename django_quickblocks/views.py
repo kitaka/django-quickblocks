@@ -193,7 +193,7 @@ class QuickBlockImageCRUDL(SmartCRUDL):
 
         def derive_initial(self, *args, **kwargs):
             initial = super(QuickBlockImageCRUDL.Create, self).derive_initial(*args, **kwargs)
-            quickblock = QuickBlock.objects.get(pk=self.request.REQUEST.get('quickblock'))
+            quickblock = QuickBlock.objects.get(pk=self.request.GET.get('quickblock'))
             images = quickblock.sorted_images()
             if not images:
                 initial['priority'] = 0
@@ -206,7 +206,7 @@ class QuickBlockImageCRUDL(SmartCRUDL):
 
         def pre_save(self, obj):
             obj = super(QuickBlockImageCRUDL.Create, self).pre_save(obj)
-            obj.quickblock = QuickBlock.objects.get(pk=self.request.REQUEST.get('quickblock'))
+            obj.quickblock = QuickBlock.objects.get(pk=self.request.GET.get('quickblock'))
             return obj
 
 
