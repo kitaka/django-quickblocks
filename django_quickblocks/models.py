@@ -33,7 +33,7 @@ class QuickBlockType(SmartModel):
     has_tags = models.BooleanField(default=False,
                                    help_text="Whether this content should allow tags")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class QuickBlock(SmartModel):
@@ -76,7 +76,7 @@ class QuickBlock(SmartModel):
     def sorted_images(self):
         return self.images.filter(is_active=True).order_by('-priority')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 class QuickBlockImage(SmartModel):
